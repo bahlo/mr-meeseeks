@@ -58,7 +58,7 @@ export default class Bot {
         mrkdwn_in: ['text', 'pretext'],
         // eslint-disable-next-line prefer-template
         text: '```\n' + stdout + '\n```',
-        footer: 'I\'m Mr. Meeseeks, look at me!',
+        footer: 'I\'m Mr. Meeseeks! Look at me!',
         fields: [{
           title: 'Duration',
           value: prettyMs(ms),
