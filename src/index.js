@@ -28,12 +28,9 @@ function logLevel() {
   const bot = new Bot({
     token: process.env.SLACK_TOKEN,
     channelName: process.env.SLACK_CHANNEL,
+    playbookRepo: process.env.PLAYBOOK_REPO,
   });
 
   // Start
-  try {
-    bot.start();
-  } catch (e) {
-    winston.error(e.message);
-  }
+  bot.start();
 }());
