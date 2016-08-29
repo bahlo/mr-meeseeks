@@ -13,14 +13,27 @@ function logLevel() {
 }
 
 (function main() {
-  console.log(logLevel());
-  winston.level = logLevel();
+  // Configure logger
+  winston.remove(winston.transports.Console)
+    .add(winston.transports.Console, {
+      level: logLevel(),
+      prettyPrint: true,
+      colorize: true,
+      silent: false,
+      timestamp: false,
+    });
 
-  winston.info('Creating bot');
+  // Configure bot
+  winston.info('Starting bot');
   const bot = new Bot({
-    slackToken: process.env.SLACK_TOKEN,
+    token: process.env.SLACK_TOKEN,
+    channelName: process.env.SLACK_CHANNEL,
   });
 
-  winston.info('Starting bot');
-  bot.run();
+  // Start
+  try {
+    bot.start();
+  } catch (e) {
+    winston.error(e.message);
+  }
 }());
