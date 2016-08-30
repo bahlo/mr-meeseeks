@@ -10,7 +10,7 @@ RUN apk add --no-cache python python-dev py-pip build-base libffi-dev openssh op
     npm install && \
     mkdir ~/.ssh && \
     echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config && \
-    echo '#/bin/sh \n\
+    echo -e '#/bin/sh \n\
 set -e \n\
 # Set up SSH \n\
 echo "$DEPLOY_KEY" > ~/.ssh/id \n\
