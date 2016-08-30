@@ -5,7 +5,7 @@ ENV BIN=/usr/local/bin/mr-meeseeks
 COPY . /srv/app
 WORKDIR /srv/app
 
-RUN apk add --no-cache python python-dev py-pip build-base libffi-dev openssh openssl-dev && \
+RUN apk add --no-cache python python-dev py-pip build-base libffi-dev openssh openssl-dev git && \
     pip install ansible && \
     npm install && \
     mkdir ~/.ssh && \
