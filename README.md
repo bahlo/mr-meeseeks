@@ -6,8 +6,8 @@
 ## What?
 
 Mr. Meeseeks is a deploy bot for Slack and Ansible.
-When you direct-mention your bot like this: `@mm deploy app beta`, 
-it runs [Ansible](http://ansible.com) with the tag `deploy_app_beta` 
+When you direct-mention your bot like this: `@mm deploy app beta`,
+it runs [Ansible](http://ansible.com) with the tag `deploy_app_beta`
 and tells you if it worked or not and how long it took.
 
 ## Install
@@ -23,6 +23,9 @@ You'll need the following environment variables:
 - `SLACK_TOKEN`: The token from your Slack bot creation page
 - `SLACK_CHANNEL`: The channel name (without the `#`)
 - `PLAYBOOK_REPO`: The repository which contains the playbooks
+- `PLAYBOOK`: The playbook file to be used in `ansible-playbook`
+- `PORT`: The port for the static log server
+- `LOG_URL`: The public URL of the log server (without trailing `/`)
 
 ## License
 
