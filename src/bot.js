@@ -5,14 +5,13 @@ import prettyMs from 'pretty-ms';
 import Ansible from './ansible';
 
 function buildReply({ text, color, start, user, logURL }) {
-  const ms = (new Date()).getMilliseconds() - start;
-  winston.debug(ms);
+  const ms = Date.now() - start;
 
   return {
     response_type: 'in_channel',
     attachments: [{
       mrkdwn_in: ['text'],
-      text: `${text}\n<${logURL}|View log>`,
+      text: `${text} – <${logURL}|View log>`,
       color,
       footer: 'I\'m Mr. Meeseeks! Look at me!',
       fields: [{
@@ -47,7 +46,8 @@ export default class Bot {
       token: this.token,
     }).startRTM((err, bot, payload) => {
       if (err) {
-        throw new Error('Could not connect to Slack');
+        reject(err);
+        return;
       }
 
       // Find the id of the allowed channel
@@ -84,7 +84,7 @@ export default class Bot {
       logFolder: this.logFolder,
       repo: this.playbookRepo,
     });
-    const start = (new Date()).getMilliseconds();
+    const start = Date.now();
     ansible.run(tag).then((logFile) => {
       const reply = buildReply({
         text: `:tada: Deployed *${appName}*`,
