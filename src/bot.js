@@ -5,13 +5,14 @@ import prettyMs from 'pretty-ms';
 import Ansible from './ansible';
 
 function buildReply({ text, color, start, user, logURL }) {
-  const ms = Date.now() - start;
+  const now = Date.now();
+  const ms = now - start;
 
   return {
     response_type: 'in_channel',
     attachments: [{
       mrkdwn_in: ['text'],
-      text: `${text} – <${logURL}|View log>`,
+      text: `${text}\n<${logURL}|View log>`,
       color,
       footer: 'I\'m Mr. Meeseeks! Look at me!',
       fields: [{
@@ -20,18 +21,21 @@ function buildReply({ text, color, start, user, logURL }) {
         short: true,
       }, {
         title: 'Started by',
-        value: user,
+        value: `<@${user}>`,
         short: true,
       }],
+      ts: now / 1000,
     }],
   };
 }
 
 export default class Bot {
-  constructor({ token, channelName, playbookRepo, logFolder, logURL }) {
+  constructor({ token, channelName, playbookRepo, playbook, logFolder,
+    logURL }) {
     this.token = token;
     this.channelName = channelName;
     this.playbookRepo = playbookRepo;
+    this.playbook = playbook;
     this.logFolder = logFolder;
     this.logURL = logURL;
 
@@ -77,16 +81,18 @@ export default class Bot {
       .toLowerCase();
     const tag = `deploy_${appName.replace(/[ -]/g, '_')}`;
 
-    bot.reply(message, `:muscle: Deploying the ${superb()} \`${appName}\``);
+    bot.reply(message,
+      `:inbox_tray: Starting deployment of  the ${superb()} \`${appName}\``);
 
     const ansible = new Ansible({
       logFolder: this.logFolder,
       repo: this.playbookRepo,
+      playbook: this.playbook,
     });
     const start = Date.now();
     ansible.run(tag).then((logFile) => {
       const reply = buildReply({
-        text: `:tada: Deployed *${appName}*`,
+        text: `:white_check_mark: Deployed *${appName}*`,
         fallback: `Deployed ${appName}`,
         color: 'good',
         start,
@@ -95,10 +101,10 @@ export default class Bot {
       });
       winston.debug('Sending reply:', reply);
       bot.reply(message, reply);
-    }, ([err, logFile]) => {
+    }, ({ err, logFile }) => {
       const reply = buildReply({
-        text: `:sob: Deployment of *${appName}* failed: ${err}`,
-        fallback: `Deployment of ${appName} failed: ${err}`,
+        text: `:x: Deployment of *${appName}* failed: \n\`\`\`${err}\`\`\``,
+        fallback: `Deployment of ${appName} failed`,
         color: 'danger',
         start,
         user: message.user,

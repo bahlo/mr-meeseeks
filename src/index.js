@@ -37,6 +37,7 @@ function logLevel() {
     token: process.env.SLACK_TOKEN,
     channelName: process.env.SLACK_CHANNEL,
     playbookRepo: process.env.PLAYBOOK_REPO,
+    playbook: process.env.PLAYBOOK || 'all.yml',
     logFolder,
     logURL,
   });

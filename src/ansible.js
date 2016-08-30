@@ -45,9 +45,10 @@ function saveLog(folder, stdout) {
 }
 
 export default class Ansible {
-  constructor({ logFolder, repo }) {
+  constructor({ logFolder, repo, playbook }) {
     this.logFolder = logFolder;
     this.repo = repo;
+    this.playbook = playbook;
     this.dir = '';
   }
 
@@ -66,7 +67,7 @@ export default class Ansible {
           'ansible-playbook',
           '-b',
           '-i', 'inventory',
-          'all.yml',
+          this.playbook,
           '--tags', tags,
           '2>&1', // Redirect stderr to stdout
         ].join(' ');
@@ -75,7 +76,13 @@ export default class Ansible {
         return new Promise((resolve, reject) => {
           exec(cmd, { cwd: `${this.dir}/playbooks` }, (err, stdout) => {
             if (err) {
-              reject([err, stdout]);
+              // TODO: Improve code clarity, why do we call it again at the
+              //       end?
+              saveLog(this.logFolder, stdout).then((logFile) => {
+                reject({ err, logFile });
+              }, (logErr) => {
+                reject({ err: logErr });
+              });
               return;
             }
 
