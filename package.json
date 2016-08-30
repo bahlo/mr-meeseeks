@@ -7,7 +7,7 @@
     "preinstall": "npm run build",
     "build": "babel src -d lib",
     "start": "npm run build && node lib/index",
-    "test": "jslint ."
+    "test": "eslint src"
   },
   "repository": {
     "type": "git",

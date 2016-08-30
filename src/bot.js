@@ -46,8 +46,7 @@ export default class Bot {
       token: this.token,
     }).startRTM((err, bot, payload) => {
       if (err) {
-        reject(err);
-        return;
+        throw new Error(err);
       }
 
       // Find the id of the allowed channel

@@ -71,7 +71,7 @@ export default class Ansible {
           '2>&1', // Redirect stderr to stdout
         ].join(' ');
         winston.debug(`Running cmd \`${cmd}\``);
-        
+
         return new Promise((resolve, reject) => {
           exec(cmd, { cwd: `${this.dir}/playbooks` }, (err, stdout) => {
             if (err) {
