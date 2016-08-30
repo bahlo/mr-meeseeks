@@ -35,6 +35,7 @@ export default class Bot {
     this.token = token;
     this.channelName = channelName;
     this.ansibleConfig = ansibleConfig;
+    this.ansibleConfig.logFolder = logFolder;
     this.logFolder = logFolder;
     this.logURL = logURL;
 
@@ -93,12 +94,7 @@ export default class Bot {
     bot.reply(message,
       `:inbox_tray: Starting deployment of  the ${superb()} ${appName}`);
 
-    const ansible = new Ansible({
-      logFolder: this.logFolder,
-      repo: this.ansibleConfig.repo,
-      playbook: this.ansibleConfig.playbook,
-      user: this.ansibleConfig.user,
-    });
+    const ansible = new Ansible(this.ansibleConfig);
     const start = Date.now();
     ansible.run(tag).then((logFile) => {
       const reply = buildReply({

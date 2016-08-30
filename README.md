@@ -25,6 +25,7 @@ You'll need the following environment variables:
 - `PLAYBOOK`: The playbook file to be used in `ansible-playbook`
 - `PLAYBOOK_REPO`: The repository which contains the playbooks
 - `PLAYBOOK_USER`: The user to use for the playbook (`-u`)
+- `VAULT_PASS_FILE`: The file which contains the password to decrypt the vault
 - `PORT`: The port for the static log server
 - `LOG_URL`: The public URL of the log server (without trailing `/`)
 

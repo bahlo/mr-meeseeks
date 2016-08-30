@@ -34,6 +34,7 @@ function logLevel() {
     repo: process.env.PLAYBOOK_REPO,
     playbook: process.env.PLAYBOOK || 'all.yml',
     user: process.env.PLAYBOOK_USER || 'deploy',
+    vaultPassFile: process.env.VAULT_PASS_FILE || '~/.vault_pass',
   };
 
   // Configure bot

@@ -45,11 +45,12 @@ function saveLog(folder, stdout) {
 }
 
 export default class Ansible {
-  constructor({ logFolder, repo, playbook, user }) {
+  constructor({ logFolder, repo, playbook, user, vaultPassFile }) {
     this.logFolder = logFolder;
     this.repo = repo;
     this.playbook = playbook;
     this.user = user;
+    this.vaultPassFile = vaultPassFile;
     this.dir = '';
   }
 
@@ -69,6 +70,7 @@ export default class Ansible {
           '-b',
           '-u', this.user,
           '-i', 'inventory',
+          '--vault-password-file', this.vaultPassFile,
           this.playbook,
           '--tags', tags,
           '2>&1', // Redirect stderr to stdout
