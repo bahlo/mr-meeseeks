@@ -4,7 +4,7 @@ import superb from 'superb';
 import prettyMs from 'pretty-ms';
 import Ansible from './ansible';
 
-function buildReply({ text, color, start, user, logURL }) {
+function buildReply({ text, fallback, color, start, user, logURL }) {
   const now = Date.now();
   const ms = now - start;
 
@@ -12,6 +12,7 @@ function buildReply({ text, color, start, user, logURL }) {
     response_type: 'in_channel',
     attachments: [{
       mrkdwn_in: ['text'],
+      fallback,
       text: `${text}\n<${logURL}|View log>`,
       color,
       footer: 'I\'m Mr. Meeseeks! Look at me!',
@@ -42,6 +43,7 @@ export default class Bot {
     this.controller = Botkit.slackbot({
       debug: false,
     });
+    this.running = {};
   }
 
   start() {
@@ -81,8 +83,17 @@ export default class Bot {
       .toLowerCase();
     const tag = `deploy_${appName.replace(/[ -]/g, '_')}`;
 
+    winston.debug('Check if already running');
+    if (this.running[tag] === true) {
+      bot.reply(message,
+        `:warning: ${appName} is currently in deployment, try again later`);
+      return;
+    }
+    winston.debug('Not running, set value in table')
+    this.running[tag] = true;
+
     bot.reply(message,
-      `:inbox_tray: Starting deployment of  the ${superb()} \`${appName}\``);
+      `:inbox_tray: Starting deployment of  the ${superb()} ${appName}`);
 
     const ansible = new Ansible({
       logFolder: this.logFolder,
@@ -92,26 +103,30 @@ export default class Bot {
     const start = Date.now();
     ansible.run(tag).then((logFile) => {
       const reply = buildReply({
-        text: `:white_check_mark: Deployed *${appName}*`,
+        text: `:white_check_mark: Deployed ${appName}`,
         fallback: `Deployed ${appName}`,
         color: 'good',
         start,
         user: message.user,
         logURL: `${this.logURL}/${logFile}`,
       });
+
       winston.debug('Sending reply:', reply);
       bot.reply(message, reply);
+      this.running[tag] = false;
     }, ({ err, logFile }) => {
       const reply = buildReply({
-        text: `:x: Deployment of *${appName}* failed: \n\`\`\`${err}\`\`\``,
+        text: `:x: Deployment of ${appName} failed: \n\`\`\`${err}\`\`\``,
         fallback: `Deployment of ${appName} failed`,
         color: 'danger',
         start,
         user: message.user,
         logURL: `${this.logURL}/${logFile}`,
       });
+
       winston.debug('Sending reply:', reply);
       bot.reply(message, reply);
+      this.running[tag] = false;
     });
   }
 }
