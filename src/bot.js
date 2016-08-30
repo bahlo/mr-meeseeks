@@ -31,12 +31,10 @@ function buildReply({ text, fallback, color, start, user, logURL }) {
 }
 
 export default class Bot {
-  constructor({ token, channelName, playbookRepo, playbook, logFolder,
-    logURL }) {
+  constructor({ token, channelName, ansibleConfig, logFolder, logURL }) {
     this.token = token;
     this.channelName = channelName;
-    this.playbookRepo = playbookRepo;
-    this.playbook = playbook;
+    this.ansibleConfig = ansibleConfig;
     this.logFolder = logFolder;
     this.logURL = logURL;
 
@@ -97,8 +95,9 @@ export default class Bot {
 
     const ansible = new Ansible({
       logFolder: this.logFolder,
-      repo: this.playbookRepo,
-      playbook: this.playbook,
+      repo: this.ansibleConfig.repo,
+      playbook: this.ansibleConfig.playbook,
+      user: this.ansibleConfig.user,
     });
     const start = Date.now();
     ansible.run(tag).then((logFile) => {

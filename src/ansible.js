@@ -45,10 +45,11 @@ function saveLog(folder, stdout) {
 }
 
 export default class Ansible {
-  constructor({ logFolder, repo, playbook }) {
+  constructor({ logFolder, repo, playbook, user }) {
     this.logFolder = logFolder;
     this.repo = repo;
     this.playbook = playbook;
+    this.user = user;
     this.dir = '';
   }
 
@@ -66,6 +67,7 @@ export default class Ansible {
         const cmd = [
           'ansible-playbook',
           '-b',
+          '-u', this.user,
           '-i', 'inventory',
           this.playbook,
           '--tags', tags,

@@ -30,14 +30,18 @@ function logLevel() {
   const logFolder = 'logs';
   const logURL = process.env.LOG_URL || 'http://localhost';
   const port = process.env.PORT || 80;
+  const ansibleConfig = {
+    repo: process.env.PLAYBOOK_REPO,
+    playbook: process.env.PLAYBOOK || 'all.yml',
+    user: process.env.PLAYBOOK_USER || 'deploy',
+  };
 
   // Configure bot
   winston.info('Starting bot');
   const bot = new Bot({
     token: process.env.SLACK_TOKEN,
     channelName: process.env.SLACK_CHANNEL,
-    playbookRepo: process.env.PLAYBOOK_REPO,
-    playbook: process.env.PLAYBOOK || 'all.yml',
+    ansibleConfig,
     logFolder,
     logURL,
   });
