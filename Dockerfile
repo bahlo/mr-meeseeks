@@ -7,6 +7,7 @@ WORKDIR /srv/app
 
 RUN npm install && \
     mkdir ~/.ssh && \
+    echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config && \
     echo '#/bin/sh' >> $BIN && \
     echo 'set -e' >> $BIN && \
     echo 'echo "$DEPLOY_KEY" > ~/.ssh/id' >> $BIN && \
