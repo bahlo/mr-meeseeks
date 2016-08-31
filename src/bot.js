@@ -92,7 +92,7 @@ export default class Bot {
     this.running[flag] = true;
 
     bot.reply(message,
-      `:inbox_tray: Starting deployment of  the ${superb()} ${appName}`);
+      `:inbox_tray: Starting deployment of the ${superb()} ${appName}`);
 
     const ansible = new Ansible(this.ansibleConfig);
     const start = Date.now();
