@@ -30,10 +30,10 @@ function cloneRepository(url, path) {
   });
 }
 
-function saveLog(folder, stdout) {
+function saveLog(folder, output) {
   const fileName = `${(Math.random() + 1).toString(36).substring(2)}.log`;
   return new Promise((resolve, reject) => {
-    fs.writeFile(`${folder}/${fileName}`, stdout, (err) => {
+    fs.writeFile(`${folder}/${fileName}`, output, (err) => {
       if (err) {
         reject(err);
         return;
@@ -42,6 +42,10 @@ function saveLog(folder, stdout) {
       resolve(fileName);
     });
   });
+}
+
+function redactOutput(output) {
+  return output.replace(/u'([A-Z0-9_]+)': u'([^']*)'/g, 'u\'$1\': u\'xxx\'');
 }
 
 export default class Ansible {
@@ -80,10 +84,12 @@ export default class Ansible {
 
         return new Promise((resolve, reject) => {
           exec(cmd, { cwd: `${this.dir}/playbooks` }, (err, stdout) => {
+            const output = redactOutput(stdout);
+
             if (err) {
               // TODO: Improve code clarity, why do we call it again at the
               //       end?
-              saveLog(this.logFolder, stdout).then((logFile) => {
+              saveLog(this.logFolder, output).then((logFile) => {
                 reject({ err, logFile });
               }, (logErr) => {
                 reject({ err: logErr });
@@ -91,10 +97,10 @@ export default class Ansible {
               return;
             }
 
-            resolve(stdout);
+            resolve(output);
           });
         });
       })
-      .then(stdout => saveLog(this.logFolder, stdout));
+      .then(output => saveLog(this.logFolder, output));
   }
 }

@@ -88,7 +88,7 @@ export default class Bot {
         `:warning: ${appName} is currently in deployment, try again later`);
       return;
     }
-    winston.debug('Not running, set value in table')
+    winston.debug('Not running, set value in table');
     this.running[flag] = true;
 
     bot.reply(message,
