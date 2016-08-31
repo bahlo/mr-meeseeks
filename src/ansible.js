@@ -73,7 +73,7 @@ export default class Ansible {
           '--vault-password-file', this.vaultPassFile,
           this.playbook,
           '--tags', 'deploy',
-          `-e ${flag}=true`
+          `-e ${flag}=true`,
           '2>&1', // Redirect stderr to stdout
         ].join(' ');
         winston.debug(`Running cmd \`${cmd}\``);
