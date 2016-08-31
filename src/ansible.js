@@ -54,8 +54,8 @@ export default class Ansible {
     this.dir = '';
   }
 
-  run(tags) {
-    winston.debug(`Running ansible with tag \`${tags}\``);
+  run(flag) {
+    winston.debug(`Running ansible with tag \`${flag}\``);
     return createTempDir('ansible-playbooks')
       .then((dir) => {
         winston.debug(`Created temporary directory at ${dir}`);
@@ -72,7 +72,8 @@ export default class Ansible {
           '-i', 'inventory',
           '--vault-password-file', this.vaultPassFile,
           this.playbook,
-          '--tags', tags,
+          '--tags', 'deploy',
+          `-e ${flag}=true`
           '2>&1', // Redirect stderr to stdout
         ].join(' ');
         winston.debug(`Running cmd \`${cmd}\``);

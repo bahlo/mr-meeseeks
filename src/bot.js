@@ -80,23 +80,23 @@ export default class Bot {
     const appName = `${message.match[1]} ${message.match[2] || ''}`
       .trim()
       .toLowerCase();
-    const tag = `deploy_${appName.replace(/[ -]/g, '_')}`;
+    const flag = `deploy_${appName.replace(/[ -]/g, '_')}`;
 
     winston.debug('Check if already running');
-    if (this.running[tag] === true) {
+    if (this.running[flag] === true) {
       bot.reply(message,
         `:warning: ${appName} is currently in deployment, try again later`);
       return;
     }
     winston.debug('Not running, set value in table')
-    this.running[tag] = true;
+    this.running[flag] = true;
 
     bot.reply(message,
       `:inbox_tray: Starting deployment of  the ${superb()} ${appName}`);
 
     const ansible = new Ansible(this.ansibleConfig);
     const start = Date.now();
-    ansible.run(tag).then((logFile) => {
+    ansible.run(flag).then((logFile) => {
       const reply = buildReply({
         text: `:white_check_mark: Deployed ${appName}`,
         fallback: `Deployed ${appName}`,
@@ -108,7 +108,7 @@ export default class Bot {
 
       winston.debug('Sending reply:', reply);
       bot.reply(message, reply);
-      this.running[tag] = false;
+      this.running[flag] = false;
     }, ({ err, logFile }) => {
       const reply = buildReply({
         text: `:x: Deployment of ${appName} failed: \n\`\`\`${err}\`\`\``,
@@ -121,7 +121,7 @@ export default class Bot {
 
       winston.debug('Sending reply:', reply);
       bot.reply(message, reply);
-      this.running[tag] = false;
+      this.running[flag] = false;
     });
   }
 }
