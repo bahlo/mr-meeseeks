@@ -71,10 +71,7 @@ export default class Ansible {
 
         const cmd = [
           'ansible-playbook',
-          '-b',
           '-u', this.user,
-          '-i', 'inventory',
-          '--vault-password-file', this.vaultPassFile,
           this.playbook,
           '--tags', 'deploy',
           `-e ${flag}=true`,
