@@ -73,6 +73,7 @@ export default class Ansible {
           'ansible-playbook',
           '-u', this.user,
           this.playbook,
+          '--vault-password-file', this.vaultPassFile,
           '--tags', 'deploy',
           `-e ${flag}=true`,
           '2>&1', // Redirect stderr to stdout
